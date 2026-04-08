@@ -1,7 +1,10 @@
 package esmukanov.evote_system.user_management.services.impl;
 
+import esmukanov.evote_system.commons.enums.Role;
+import esmukanov.evote_system.commons.enums.UserStatus;
 import esmukanov.evote_system.commons.mappers.UserMapper;
 import esmukanov.evote_system.commons.models.User;
+import esmukanov.evote_system.user_management.exceptions.UserAlreadyExistsException;
 import esmukanov.evote_system.user_management.exceptions.UserNotFoundException;
 import esmukanov.evote_system.user_management.repositories.UserRepository;
 import esmukanov.evote_system.user_management.services.UserService;
@@ -27,21 +30,80 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> getAllUsers() {
-        return List.of();
+        return userMapper.toModels(userRepository.findAll());
     }
 
     @Override
     public User create(User newUser) {
-        return null;
+        User existingUser = getUserById(newUser.getId().toString());
+        if (existingUser != null) {
+            throw new UserAlreadyExistsException("User by ID [%s] already exists".formatted(newUser.getId()));
+        }
+
+        userRepository.save(userMapper.toEntity(newUser));
+        return newUser;
     }
 
     @Override
     public User update(User user) {
-        return null;
+        User existsUser = getUserById(user.getId().toString());
+        existsUser.setUsername(user.getUsername());
+        existsUser.setEmail(user.getEmail());
+        existsUser.setPassword(user.getPassword());
+        existsUser.setRole(user.getRole());
+        existsUser.setUserStatus(user.getUserStatus());
+
+        userRepository.save(userMapper.toEntity(existsUser));
+        return existsUser;
     }
 
     @Override
     public void delete(String userId) {
+        userRepository.deleteById(UUID.fromString(userId));
+    }
 
+    @Override
+    public User getUserByUsername(String username) {
+        return null;
+    }
+
+    @Override
+    public User getUserByEmail(String email) {
+        return null;
+    }
+
+    @Override
+    public List<User> getAllUsersByRole(Role userRole) {
+        return List.of();
+    }
+
+    @Override
+    public List<User> getAllUsersByUserStatus(UserStatus userStatus) {
+        return List.of();
+    }
+
+    @Override
+    public boolean existsByUserId(String userId) {
+        return false;
+    }
+
+    @Override
+    public boolean existsByUsername(String username) {
+        return false;
+    }
+
+    @Override
+    public boolean existsByEmail(String email) {
+        return false;
+    }
+
+    @Override
+    public User activate(String userId) {
+        return null;
+    }
+
+    @Override
+    public User block(String userId) {
+        return null;
     }
 }
