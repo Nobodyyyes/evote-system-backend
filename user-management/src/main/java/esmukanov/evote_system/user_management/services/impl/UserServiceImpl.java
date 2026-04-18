@@ -64,12 +64,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUserByUsername(String username) {
-        return null;
+        return userRepository.findByUsername(username)
+                .map(userMapper::toModel)
+                .orElseThrow(() -> new UserNotFoundException("User by username [%s] not found".formatted(username)));
     }
 
     @Override
     public User getUserByEmail(String email) {
-        return null;
+        return userRepository.findByEmail(email)
+                .map(userMapper::toModel)
+                .orElseThrow(() -> new UserNotFoundException("User by email [%s] not found".formatted(email)));
     }
 
     @Override
