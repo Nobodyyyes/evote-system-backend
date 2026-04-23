@@ -35,8 +35,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User create(User newUser) {
-        User existingUser = getUserById(newUser.getId().toString()); //todo: fix here
-        if (existingUser != null) {
+        if (userRepository.existsById(newUser.getId())) {
             throw new UserAlreadyExistsException("User by ID [%s] already exists".formatted(newUser.getId()));
         }
 
