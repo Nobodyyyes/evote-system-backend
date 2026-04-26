@@ -104,4 +104,9 @@ public class ElectionOptionServiceImpl implements ElectionOptionService {
     public void deleteAllByElection(String electionId) {
         electionOptionRepository.deleteAllByElectionId(UUID.fromString(electionId));
     }
+
+    @Override
+    public long countByElectionId(String electionId) {
+        return electionOptionRepository.countAllByElectionId(UUID.fromString(electionId));
+    }
 }

@@ -17,4 +17,6 @@ public interface ElectionOptionService {
     void deleteElectionOption(String electionId, String electionOptionId);
 
     void deleteAllByElection(String electionId);
+
+    long countByElectionId(String electionId);
 }

@@ -7,6 +7,7 @@ import esmukanov.evote_system.election_management.exceptions.ElectionNotFoundExc
 import esmukanov.evote_system.election_management.models.request.CreateElectionRequest;
 import esmukanov.evote_system.election_management.models.request.UpdateElectionRequest;
 import esmukanov.evote_system.election_management.repositories.ElectionRepository;
+import esmukanov.evote_system.election_management.services.ElectionOptionService;
 import esmukanov.evote_system.election_management.services.ElectionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,8 +21,12 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ElectionServiceImpl implements ElectionService {
 
+    private static final long MIN_ELECTION_OPTIONS = 2;
+
     private final ElectionRepository electionRepository;
     private final ElectionMapper electionMapper;
+
+    private final ElectionOptionService electionOptionService;
 
     @Override
     public List<Election> getAllElections() {
@@ -68,6 +73,47 @@ public class ElectionServiceImpl implements ElectionService {
     @Override
     public void deleteElection(String electionId) {
         electionRepository.deleteById(UUID.fromString(electionId));
+    }
+
+    @Override
+    public void publishElection(String electionId) {
+        Election existsElection = getElectionById(electionId);
+
+        if (existsElection.getElectionStatus() != ElectionStatus.DRAFT) {
+            throw new IllegalStateException("Опубликовать можно только голосование в статусе DRAFT");
+        }
+
+        validateElectionBeforePublish(existsElection);
+
+        existsElection.setElectionStatus(ElectionStatus.SCHEDULED);
+        electionRepository.save(electionMapper.toEntity(existsElection));
+    }
+
+    private void validateElectionBeforePublish(Election election) {
+        if (election.getName() == null || election.getName().isBlank()) {
+            throw new IllegalStateException("Название голосования обязательно");
+        }
+
+        if (election.getStartDateTime() == null) {
+            throw new IllegalStateException("Дата начала голосования обязательна");
+        }
+
+        if (election.getEndDateTime() == null) {
+            throw new IllegalStateException("Дата окончания голосования обязательна");
+        }
+
+        if (election.getStartDateTime().isBefore(election.getEndDateTime())) {
+            throw new IllegalStateException("Дата начала должна быть раньше даты окончания");
+        }
+
+        if (!election.getStartDateTime().isAfter(LocalDateTime.now())) {
+            throw new IllegalStateException("Дата начала голосования должна быть в будущем");
+        }
+
+        long optionsCount = electionOptionService.countByElectionId(election.getUuid().toString());
+        if (optionsCount < MIN_ELECTION_OPTIONS) {
+            throw new IllegalStateException("Для публикации голосования нужно добавить минимум 2 варианта ответа");
+        }
     }
 
     @Override

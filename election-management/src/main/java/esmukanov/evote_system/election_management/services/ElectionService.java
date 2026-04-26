@@ -20,6 +20,8 @@ public interface ElectionService {
 
     void deleteElection(String electionId);
 
+    void publishElection(String electionId);
+
     int activateElections(LocalDateTime activateTime);
 
     int finishActiveElections(LocalDateTime finishedTime);

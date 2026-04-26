@@ -31,6 +31,11 @@ public class ElectionController {
         return electionService.createElection(request);
     }
 
+    @PostMapping("/publish/{electionId}")
+    public void publishElection(@PathVariable String electionId) {
+        electionService.publishElection(electionId);
+    }
+
     @PutMapping("/{electionId}")
     public Election updateElection(@PathVariable String electionId,
                                    @RequestBody UpdateElectionRequest request) {
