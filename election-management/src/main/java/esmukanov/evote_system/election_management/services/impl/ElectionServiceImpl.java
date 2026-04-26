@@ -59,6 +59,7 @@ public class ElectionServiceImpl implements ElectionService {
         Election existsElection = getElectionById(electionId);
         existsElection.setName(request.name());
         existsElection.setDescription(request.description());
+        existsElection.setEndDateTime(request.endDateTime());
         existsElection.setAccessElectionType(request.accessElectionType());
 
         return electionMapper.toModel(electionRepository.save(electionMapper.toEntity(existsElection)));
