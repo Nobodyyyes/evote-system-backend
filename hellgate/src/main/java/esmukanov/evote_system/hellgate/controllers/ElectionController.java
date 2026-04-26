@@ -1,6 +1,8 @@
 package esmukanov.evote_system.hellgate.controllers;
 
 import esmukanov.evote_system.commons.models.Election;
+import esmukanov.evote_system.election_management.models.request.CreateElectionRequest;
+import esmukanov.evote_system.election_management.models.request.UpdateElectionRequest;
 import esmukanov.evote_system.election_management.services.ElectionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -25,13 +27,14 @@ public class ElectionController {
     }
 
     @PostMapping
-    public Election createElection(@RequestBody Election election) {
-        return electionService.createElection(election);
+    public Election createElection(@RequestBody CreateElectionRequest request) {
+        return electionService.createElection(request);
     }
 
-    @PutMapping
-    public Election updateElection(@RequestBody Election election) {
-        return electionService.updateElection(election);
+    @PutMapping("/{electionId}")
+    public Election updateElection(@PathVariable String electionId,
+                                   @RequestBody UpdateElectionRequest request) {
+        return electionService.updateElection(electionId, request);
     }
 
     @DeleteMapping("/{electionId}")
