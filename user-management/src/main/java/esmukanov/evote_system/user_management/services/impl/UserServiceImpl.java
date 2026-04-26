@@ -1,7 +1,5 @@
 package esmukanov.evote_system.user_management.services.impl;
 
-import esmukanov.evote_system.commons.enums.Role;
-import esmukanov.evote_system.commons.enums.UserStatus;
 import esmukanov.evote_system.commons.mappers.UserMapper;
 import esmukanov.evote_system.commons.models.User;
 import esmukanov.evote_system.user_management.exceptions.UserAlreadyExistsException;
@@ -59,54 +57,5 @@ public class UserServiceImpl implements UserService {
     @Override
     public void delete(String userId) {
         userRepository.deleteById(UUID.fromString(userId));
-    }
-
-    @Override
-    public User getUserByUsername(String username) {
-        return userRepository.findByUsername(username)
-                .map(userMapper::toModel)
-                .orElseThrow(() -> new UserNotFoundException("User by username [%s] not found".formatted(username)));
-    }
-
-    @Override
-    public User getUserByEmail(String email) {
-        return userRepository.findByEmail(email)
-                .map(userMapper::toModel)
-                .orElseThrow(() -> new UserNotFoundException("User by email [%s] not found".formatted(email)));
-    }
-
-    @Override
-    public List<User> getAllUsersByRole(Role userRole) {
-        return List.of();
-    }
-
-    @Override
-    public List<User> getAllUsersByUserStatus(UserStatus userStatus) {
-        return List.of();
-    }
-
-    @Override
-    public boolean existsByUserId(String userId) {
-        return false;
-    }
-
-    @Override
-    public boolean existsByUsername(String username) {
-        return false;
-    }
-
-    @Override
-    public boolean existsByEmail(String email) {
-        return false;
-    }
-
-    @Override
-    public User activate(String userId) {
-        return null;
-    }
-
-    @Override
-    public User block(String userId) {
-        return null;
     }
 }

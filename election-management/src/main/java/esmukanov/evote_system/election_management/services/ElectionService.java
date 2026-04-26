@@ -1,7 +1,8 @@
-package esmukanov.services;
+package esmukanov.evote_system.election_management.services;
 
 import esmukanov.evote_system.commons.models.Election;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface ElectionService {
@@ -15,4 +16,6 @@ public interface ElectionService {
     Election updateElection(Election election);
 
     void deleteElection(String electionId);
+
+    int activateElection(LocalDateTime activateTime);
 }

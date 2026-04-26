@@ -1,14 +1,17 @@
-package esmukanov.services.impl;
+package esmukanov.evote_system.election_management.services.impl;
 
+import esmukanov.evote_system.commons.enums.ElectionStatus;
 import esmukanov.evote_system.commons.mappers.ElectionMapper;
 import esmukanov.evote_system.commons.models.Election;
-import esmukanov.exceptions.ElectionAlreadyExistsException;
-import esmukanov.exceptions.ElectionNotFoundException;
-import esmukanov.repositories.ElectionRepository;
-import esmukanov.services.ElectionService;
+import esmukanov.evote_system.election_management.exceptions.ElectionAlreadyExistsException;
+import esmukanov.evote_system.election_management.exceptions.ElectionNotFoundException;
+import esmukanov.evote_system.election_management.repositories.ElectionRepository;
+import esmukanov.evote_system.election_management.services.ElectionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -51,6 +54,7 @@ public class ElectionServiceImpl implements ElectionService {
         existsElection.setDescription(election.getDescription());
         existsElection.setStartDateTime(election.getStartDateTime());
         existsElection.setEndDateTime(election.getEndDateTime());
+        existsElection.setCreatedAt(election.getCreatedAt());
         existsElection.setElectionStatus(election.getElectionStatus());
         existsElection.setCreatorInfo(election.getCreatorInfo());
         existsElection.setAccessElectionType(election.getAccessElectionType());
@@ -61,5 +65,15 @@ public class ElectionServiceImpl implements ElectionService {
     @Override
     public void deleteElection(String electionId) {
         electionRepository.deleteById(UUID.fromString(electionId));
+    }
+
+    @Override
+    @Transactional
+    public int activateElection(LocalDateTime activateTime) {
+        return electionRepository.activateScheduledElections(
+                activateTime,
+                ElectionStatus.SCHEDULED,
+                ElectionStatus.ACTIVE
+        );
     }
 }

@@ -6,3 +6,7 @@ spring:
     name: Evote System
   profiles:
     include: datasource
+
+app:
+  jobs:
+    election-active: PT1M

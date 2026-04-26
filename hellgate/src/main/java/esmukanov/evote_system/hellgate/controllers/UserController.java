@@ -1,4 +1,4 @@
-package esmukanov.controllers;
+package esmukanov.evote_system.hellgate.controllers;
 
 import esmukanov.evote_system.commons.models.User;
 import esmukanov.evote_system.user_management.services.UserService;

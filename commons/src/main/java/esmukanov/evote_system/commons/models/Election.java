@@ -21,6 +21,7 @@ public class Election {
     String description;
     LocalDateTime startDateTime;
     LocalDateTime endDateTime;
+    LocalDateTime createdAt;
     ElectionStatus electionStatus;
     String creatorInfo;
     AccessElectionType accessElectionType;

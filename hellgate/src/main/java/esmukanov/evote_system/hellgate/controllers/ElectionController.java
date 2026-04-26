@@ -1,7 +1,7 @@
-package esmukanov.controllers;
+package esmukanov.evote_system.hellgate.controllers;
 
 import esmukanov.evote_system.commons.models.Election;
-import esmukanov.services.ElectionService;
+import esmukanov.evote_system.election_management.services.ElectionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

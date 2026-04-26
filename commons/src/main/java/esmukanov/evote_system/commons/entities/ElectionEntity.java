@@ -35,6 +35,9 @@ public class ElectionEntity {
     @Column(name = "END_DATE_TIME")
     LocalDateTime endDateTime;
 
+    @Column(name = "CREATED_AT")
+    LocalDateTime createdAt;
+
     @Column(name = "ELECTION_STATUS")
     @Enumerated(EnumType.STRING)
     ElectionStatus electionStatus;
