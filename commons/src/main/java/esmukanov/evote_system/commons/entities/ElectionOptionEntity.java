@@ -17,14 +17,14 @@ import java.util.UUID;
 public class ElectionOptionEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.UUID)
     UUID uuid;
 
     @Column(name = "ELECTION_ID")
     UUID electionId;
 
     @Column(name = "TEXT")
-    String text;
+    String optionText;
 
     @Column(name = "ORDER_NUMBER")
     Integer orderNumber;

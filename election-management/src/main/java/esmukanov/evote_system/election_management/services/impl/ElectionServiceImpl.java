@@ -69,11 +69,21 @@ public class ElectionServiceImpl implements ElectionService {
 
     @Override
     @Transactional
-    public int activateElection(LocalDateTime activateTime) {
+    public int activateElections(LocalDateTime activateTime) {
         return electionRepository.activateScheduledElections(
                 activateTime,
                 ElectionStatus.SCHEDULED,
                 ElectionStatus.ACTIVE
+        );
+    }
+
+    @Override
+    @Transactional
+    public int finishActiveElections(LocalDateTime finishedTime) {
+        return electionRepository.finishActiveElections(
+                finishedTime,
+                ElectionStatus.ACTIVE,
+                ElectionStatus.COMPLETED
         );
     }
 }

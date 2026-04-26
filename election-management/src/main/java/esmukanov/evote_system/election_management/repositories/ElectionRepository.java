@@ -25,4 +25,17 @@ public interface ElectionRepository extends JpaRepository<ElectionEntity, UUID> 
             @Param("scheduledStatus") ElectionStatus scheduledStatus,
             @Param("activeStatus") ElectionStatus activeStatus
     );
+
+    @Modifying
+    @Query("""
+            update ElectionEntity e
+            set e.electionStatus = :finishedStatus
+            where e.electionStatus = :activeStatus
+            and e.electionStatus <= :now
+            """)
+    int finishActiveElections(
+            @Param("now") LocalDateTime now,
+            @Param("activeStatus") ElectionStatus activeStatus,
+            @Param("finishedStatus") ElectionStatus finishedStatus
+    );
 }

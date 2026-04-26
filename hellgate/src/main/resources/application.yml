@@ -10,3 +10,4 @@ spring:
 app:
   jobs:
     election-active: PT1M
+    election-finish: PT5M
