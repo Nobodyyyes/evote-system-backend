@@ -10,7 +10,5 @@ public interface ElectionOptionRepository extends JpaRepository<ElectionOptionEn
 
     List<ElectionOptionEntity> findAllByElectionId(UUID electionId);
 
-    void deleteAllByElectionId(UUID electionId);
-
     long countAllByElectionId(UUID electionId);
 }

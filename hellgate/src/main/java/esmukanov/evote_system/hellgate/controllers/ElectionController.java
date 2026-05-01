@@ -5,6 +5,7 @@ import esmukanov.evote_system.election_management.models.request.CreateElectionR
 import esmukanov.evote_system.election_management.models.request.UpdateElectionRequest;
 import esmukanov.evote_system.election_management.services.ElectionService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,6 +28,7 @@ public class ElectionController {
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public Election createElection(@RequestBody CreateElectionRequest request) {
         return electionService.createElection(request);
     }
@@ -43,6 +45,7 @@ public class ElectionController {
     }
 
     @DeleteMapping("/{electionId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteElection(@PathVariable String electionId) {
         electionService.deleteElection(electionId);
     }

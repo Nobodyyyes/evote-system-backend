@@ -31,7 +31,7 @@ public interface ElectionRepository extends JpaRepository<ElectionEntity, UUID> 
             update ElectionEntity e
             set e.electionStatus = :finishedStatus
             where e.electionStatus = :activeStatus
-            and e.electionStatus <= :now
+            and e.endDateTime <= :now
             """)
     int finishActiveElections(
             @Param("now") LocalDateTime now,

@@ -1,6 +1,8 @@
 package esmukanov.evote_system.hellgate.controllers;
 
 import esmukanov.evote_system.commons.models.User;
+import esmukanov.evote_system.user_management.models.request.UserCreateRequest;
+import esmukanov.evote_system.user_management.models.response.UserResponse;
 import esmukanov.evote_system.user_management.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -25,8 +27,8 @@ public class UserController {
     }
 
     @PostMapping
-    public User createUser(@RequestBody User user) {
-        return userService.create(user);
+    public UserResponse createUser(@RequestBody UserCreateRequest request) {
+        return userService.create(request);
     }
 
     @PutMapping

@@ -11,3 +11,7 @@ app:
   jobs:
     election-active: PT1M
     election-finish: PT5M
+  security:
+    jwt:
+      secret: "my-super-secret-key-my-super-secret-key"
+      expiration-minutes: 120

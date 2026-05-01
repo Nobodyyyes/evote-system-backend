@@ -5,6 +5,7 @@ import esmukanov.evote_system.election_management.models.request.CreateElectionO
 import esmukanov.evote_system.election_management.models.request.UpdateElectionOptionRequest;
 import esmukanov.evote_system.election_management.services.ElectionOptionService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,6 +23,7 @@ public class ElectionOptionController {
     }
 
     @PostMapping("/{electionId}")
+    @ResponseStatus(HttpStatus.CREATED)
     public String createElectionOption(@PathVariable String electionId,
                                        @RequestBody CreateElectionOptionRequest request) {
         return electionOptionService.createElectionOption(electionId, request);
@@ -35,6 +37,7 @@ public class ElectionOptionController {
     }
 
     @DeleteMapping
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteElectionOption(@RequestParam String electionId,
                                      @RequestParam String electionOptionId) {
         electionOptionService.deleteElectionOption(electionId, electionOptionId);
