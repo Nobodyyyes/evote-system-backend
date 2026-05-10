@@ -1,6 +1,6 @@
 package esmukanov.evote_system.election_management.services;
 
-import esmukanov.evote_system.election_management.models.reponse.ElectionOptionResponse;
+import esmukanov.evote_system.election_management.models.response.ElectionOptionResponse;
 import esmukanov.evote_system.election_management.models.request.CreateElectionOptionRequest;
 import esmukanov.evote_system.election_management.models.request.UpdateElectionOptionRequest;
 

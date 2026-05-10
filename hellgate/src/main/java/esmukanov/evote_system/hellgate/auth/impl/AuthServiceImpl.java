@@ -1,17 +1,20 @@
 package esmukanov.evote_system.hellgate.auth.impl;
 
 import esmukanov.evote_system.commons.entities.UserEntity;
-import esmukanov.evote_system.commons.mappers.UserMapper;
 import esmukanov.evote_system.hellgate.auth.AuthService;
 import esmukanov.evote_system.hellgate.auth.JwtService;
+import esmukanov.evote_system.hellgate.auth.RefreshTokenService;
 import esmukanov.evote_system.hellgate.models.request.LoginRequest;
+import esmukanov.evote_system.hellgate.models.request.RefreshTokenRequest;
 import esmukanov.evote_system.hellgate.models.response.AuthResponse;
-import esmukanov.evote_system.user_management.services.UserService;
+import esmukanov.evote_system.user_management.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -20,25 +23,54 @@ public class AuthServiceImpl implements AuthService {
     private static final String BEARER_TOKEN_TYPE = "Bearer";
 
     private final AuthenticationManager authenticationManager;
-    private final UserService userService;
+    private final UserRepository userRepository;
     private final JwtService jwtService;
-
-    private final UserMapper userMapper;
+    private final RefreshTokenService refreshTokenService;
 
     @Override
+    @Transactional
     public AuthResponse login(LoginRequest request) {
-        authenticationManager.authenticate(
+        Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.username(),
                         request.password()
                 )
         );
 
-        UserEntity user = userService.getUserByUsername(request.username())
+        String username = authentication.getName();
+
+        UserEntity user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
 
-        String token = jwtService.generateToken(userMapper.toModel(user));
+        String accessToken = jwtService.generateAccessToken(user);
+        String refreshToken = refreshTokenService.createRefreshToken(user);
 
-        return new AuthResponse(token, BEARER_TOKEN_TYPE);
+        return new AuthResponse(
+                accessToken,
+                refreshToken,
+                BEARER_TOKEN_TYPE,
+                jwtService.getAccessTokenTtlSeconds()
+        );
+    }
+
+    @Override
+    public AuthResponse refresh(RefreshTokenRequest request) {
+        UserEntity user = refreshTokenService.validateAndGetUser(request.refreshToken());
+        refreshTokenService.revoke(request.refreshToken());
+
+        String newAccessToken = jwtService.generateAccessToken(user);
+        String newRefreshToken = refreshTokenService.createRefreshToken(user);
+
+        return new AuthResponse(
+                newAccessToken,
+                newRefreshToken,
+                BEARER_TOKEN_TYPE,
+                jwtService.getAccessTokenTtlSeconds()
+        );
+    }
+
+    @Override
+    public void logout(RefreshTokenRequest request) {
+        refreshTokenService.revoke(request.refreshToken());
     }
 }

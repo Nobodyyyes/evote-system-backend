@@ -1,7 +1,7 @@
 package esmukanov.evote_system.election_management.mappers;
 
-import esmukanov.evote_system.commons.models.ElectionOption;
-import esmukanov.evote_system.election_management.models.reponse.ElectionOptionResponse;
+import esmukanov.evote_system.election_management.models.ElectionOption;
+import esmukanov.evote_system.election_management.models.response.ElectionOptionResponse;
 import org.springframework.stereotype.Component;
 
 @Component

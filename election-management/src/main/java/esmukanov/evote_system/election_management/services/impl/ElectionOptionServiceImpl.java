@@ -1,14 +1,14 @@
 package esmukanov.evote_system.election_management.services.impl;
 
 import esmukanov.evote_system.commons.enums.ElectionStatus;
-import esmukanov.evote_system.commons.mappers.ElectionMapper;
-import esmukanov.evote_system.commons.mappers.ElectionOptionMapper;
-import esmukanov.evote_system.commons.models.Election;
-import esmukanov.evote_system.commons.models.ElectionOption;
+import esmukanov.evote_system.election_management.mappers.ElectionMapper;
+import esmukanov.evote_system.election_management.mappers.ElectionOptionMapper;
+import esmukanov.evote_system.election_management.models.Election;
+import esmukanov.evote_system.election_management.models.ElectionOption;
 import esmukanov.evote_system.election_management.exceptions.ElectionNotFoundException;
 import esmukanov.evote_system.election_management.exceptions.ElectionOptionNotFoundException;
 import esmukanov.evote_system.election_management.mappers.ElectionOptionResponseMapper;
-import esmukanov.evote_system.election_management.models.reponse.ElectionOptionResponse;
+import esmukanov.evote_system.election_management.models.response.ElectionOptionResponse;
 import esmukanov.evote_system.election_management.models.request.CreateElectionOptionRequest;
 import esmukanov.evote_system.election_management.models.request.UpdateElectionOptionRequest;
 import esmukanov.evote_system.election_management.repositories.ElectionOptionRepository;
@@ -54,7 +54,7 @@ public class ElectionOptionServiceImpl implements ElectionOptionService {
                 .orderNumber(request.orderNumber())
                 .build();
 
-        return electionOptionRepository.save(electionOptionMapper.toEntity(newElection)).getUuid().toString();
+        return electionOptionRepository.save(electionOptionMapper.toEntity(newElection)).getId().toString();
     }
 
     @Override

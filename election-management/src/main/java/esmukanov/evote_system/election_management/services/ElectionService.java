@@ -1,8 +1,7 @@
 package esmukanov.evote_system.election_management.services;
 
-import esmukanov.evote_system.commons.models.Election;
+import esmukanov.evote_system.election_management.models.Election;
 import esmukanov.evote_system.election_management.models.request.CreateElectionRequest;
-import esmukanov.evote_system.election_management.models.request.UpdateElectionOptionRequest;
 import esmukanov.evote_system.election_management.models.request.UpdateElectionRequest;
 
 import java.time.LocalDateTime;

@@ -18,7 +18,7 @@ public class ElectionOptionEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    UUID uuid;
+    UUID id;
 
     @Column(name = "ELECTION_ID")
     UUID electionId;

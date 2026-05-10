@@ -1,7 +1,10 @@
 package esmukanov.evote_system.hellgate.models.response;
 
 public record AuthResponse(
-        String token,
-        String tokenType
+
+        String accessToken,
+        String refreshToken,
+        String tokenType,
+        long expiresIn
 ) {
 }

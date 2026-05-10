@@ -11,7 +11,7 @@ public class UserResponseMapper {
         return new UserResponse(
                 user.getId().toString(),
                 user.getUsername(),
-                user.getRole()
+                user.getRoles()
         );
     }
 }

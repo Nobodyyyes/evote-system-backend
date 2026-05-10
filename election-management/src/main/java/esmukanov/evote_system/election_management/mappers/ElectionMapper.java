@@ -1,7 +1,8 @@
-package esmukanov.evote_system.commons.mappers;
+package esmukanov.evote_system.election_management.mappers;
 
 import esmukanov.evote_system.commons.entities.ElectionEntity;
-import esmukanov.evote_system.commons.models.Election;
+import esmukanov.evote_system.commons.mappers.ModelMapper;
+import esmukanov.evote_system.election_management.models.Election;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -19,6 +20,8 @@ public class ElectionMapper implements ModelMapper<Election, ElectionEntity> {
                 .endDateTime(entity.getEndDateTime())
                 .createdAt(entity.getCreatedAt())
                 .electionStatus(entity.getElectionStatus())
+                .resultVisibilityType(entity.getResultVisibilityType())
+                .resultPublished(entity.isResultPublished())
                 .creatorInfo(entity.getCreatorInfo())
                 .accessElectionType(entity.getAccessElectionType())
                 .build();
@@ -36,6 +39,8 @@ public class ElectionMapper implements ModelMapper<Election, ElectionEntity> {
                 .endDateTime(model.getEndDateTime())
                 .createdAt(model.getCreatedAt())
                 .electionStatus(model.getElectionStatus())
+                .resultVisibilityType(model.getResultVisibilityType())
+                .resultPublished(model.isResultPublished())
                 .creatorInfo(model.getCreatorInfo())
                 .accessElectionType(model.getAccessElectionType())
                 .build();

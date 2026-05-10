@@ -1,17 +1,18 @@
 package esmukanov.evote_system.hellgate.auth;
 
-import esmukanov.evote_system.commons.models.User;
+import esmukanov.evote_system.commons.entities.UserEntity;
+import esmukanov.evote_system.hellgate.configurations.properties.JwtProperties;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
-import org.springframework.security.oauth2.jwt.JwsHeader;
-import org.springframework.security.oauth2.jwt.JwtClaimsSet;
-import org.springframework.security.oauth2.jwt.JwtEncoder;
-import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import javax.crypto.SecretKey;
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -21,24 +22,55 @@ public class JwtService {
     private static final String USERNAME = "username";
     private static final String ROLES = "roles";
 
-    private final JwtEncoder jwtEncoder;
+    private final JwtProperties jwtProperties;
 
-    @Value("${app.security.jwt.expiration-minutes}")
-    private long expirationMinutes;
-
-    public String generateToken(User user) {
+    public String generateAccessToken(UserEntity user) {
         Instant now = Instant.now();
+        Instant expiresAt = now.plus(jwtProperties.getAccessTokenTtl());
 
-        JwtClaimsSet claims = JwtClaimsSet.builder()
-                .subject(user.getId().toString())
-                .issuedAt(now)
-                .expiresAt(now.plus(expirationMinutes, ChronoUnit.MINUTES))
+        List<String> roles = user.getRoles()
+                .stream()
+                .map(role -> role.getRole().name())
+                .toList();
+
+        return Jwts.builder()
+                .subject(user.getUsername())
                 .claim(USERNAME, user.getUsername())
-                .claim(ROLES, List.of(user.getRole().name()))
-                .build();
+                .claim(ROLES, roles)
+                .issuedAt(Date.from(now))
+                .expiration(Date.from(expiresAt))
+                .signWith(getSigningKey())
+                .compact();
+    }
 
-        JwsHeader header = JwsHeader.with(MacAlgorithm.HS256).build();
+    public String extractUsername(String token) {
+        return parseClaims(token).getSubject();
+    }
 
-        return jwtEncoder.encode(JwtEncoderParameters.from(header, claims)).getTokenValue();
+    public boolean isTokenValid(String token, UserDetails userDetails) {
+        String username = extractUsername(token);
+        return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
+    }
+
+    public long getAccessTokenTtlSeconds() {
+        return jwtProperties.getAccessTokenTtl().toSeconds();
+    }
+
+    private boolean isTokenExpired(String token) {
+        Date expiration = parseClaims(token).getExpiration();
+        return expiration.before(new Date());
+    }
+
+    private Claims parseClaims(String token) {
+        return Jwts.parser()
+                .verifyWith(getSigningKey())
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+    }
+
+    private SecretKey getSigningKey() {
+        byte[] keyBytes = Decoders.BASE64.decode(jwtProperties.getSecret());
+        return Keys.hmacShaKeyFor(keyBytes);
     }
 }

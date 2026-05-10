@@ -1,6 +1,7 @@
 package esmukanov.evote_system.commons.entities;
 
 import esmukanov.evote_system.commons.enums.AccessElectionType;
+import esmukanov.evote_system.commons.enums.ElectionResultVisibilityType;
 import esmukanov.evote_system.commons.enums.ElectionStatus;
 import jakarta.persistence.*;
 import lombok.*;
@@ -41,6 +42,13 @@ public class ElectionEntity {
     @Column(name = "ELECTION_STATUS")
     @Enumerated(EnumType.STRING)
     ElectionStatus electionStatus;
+
+    @Column(name = "RESULT_VISIBILITY")
+    @Enumerated(EnumType.STRING)
+    ElectionResultVisibilityType resultVisibilityType = ElectionResultVisibilityType.AFTER_FINISH;
+
+    @Column(name = "IS_RESULT_PUBLISHED")
+    boolean resultPublished = false;
 
     @Column(name = "CREATOR_INFO")
     String creatorInfo;

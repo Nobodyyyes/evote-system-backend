@@ -1,8 +1,8 @@
 package esmukanov.evote_system.election_management.services.impl;
 
 import esmukanov.evote_system.commons.enums.ElectionStatus;
-import esmukanov.evote_system.commons.mappers.ElectionMapper;
-import esmukanov.evote_system.commons.models.Election;
+import esmukanov.evote_system.election_management.mappers.ElectionMapper;
+import esmukanov.evote_system.election_management.models.Election;
 import esmukanov.evote_system.election_management.exceptions.ElectionNotFoundException;
 import esmukanov.evote_system.election_management.models.request.CreateElectionRequest;
 import esmukanov.evote_system.election_management.models.request.UpdateElectionRequest;

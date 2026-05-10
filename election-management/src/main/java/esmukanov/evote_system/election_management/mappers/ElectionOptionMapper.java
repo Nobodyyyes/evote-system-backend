@@ -1,7 +1,8 @@
-package esmukanov.evote_system.commons.mappers;
+package esmukanov.evote_system.election_management.mappers;
 
 import esmukanov.evote_system.commons.entities.ElectionOptionEntity;
-import esmukanov.evote_system.commons.models.ElectionOption;
+import esmukanov.evote_system.commons.mappers.ModelMapper;
+import esmukanov.evote_system.election_management.models.ElectionOption;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -12,7 +13,7 @@ public class ElectionOptionMapper implements ModelMapper<ElectionOption, Electio
         if (entity == null) return null;
 
         return ElectionOption.builder()
-                .uuid(entity.getUuid())
+                .uuid(entity.getId())
                 .electionId(entity.getElectionId())
                 .optionText(entity.getOptionText())
                 .orderNumber(entity.getOrderNumber())

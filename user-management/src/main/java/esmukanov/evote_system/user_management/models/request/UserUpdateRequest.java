@@ -1,13 +1,14 @@
 package esmukanov.evote_system.user_management.models.request;
 
 import esmukanov.evote_system.commons.enums.Role;
+import esmukanov.evote_system.commons.enums.UserStatus;
 
 import java.util.Set;
 
-public record UserCreateRequest(
-        String username,
+public record UserUpdateRequest(
+
         String email,
-        String password,
-        Set<Role> roles
+        Set<Role> roles,
+        UserStatus userStatus
 ) {
 }

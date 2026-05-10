@@ -1,4 +1,4 @@
-package esmukanov.evote_system.commons.models;
+package esmukanov.evote_system.election_management.models;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;

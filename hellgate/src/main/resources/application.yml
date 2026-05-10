@@ -13,5 +13,6 @@ app:
     election-finish: PT5M
   security:
     jwt:
-      secret: "my-super-secret-key-my-super-secret-key"
-      expiration-minutes: 120
+      secret: QUBLEW52sg3ftVkbcZl7SkfdpnHLjyrIYSInf1dU4c8=
+      access-token-ttl: 1h
+      refres-token-ttl: 30d

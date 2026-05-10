@@ -1,4 +1,4 @@
-package esmukanov.evote_system.election_management.models.reponse;
+package esmukanov.evote_system.election_management.models.response;
 
 import lombok.*;
 

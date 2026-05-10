@@ -1,12 +1,13 @@
 package esmukanov.evote_system.commons.entities;
 
-import esmukanov.evote_system.commons.enums.Role;
 import esmukanov.evote_system.commons.enums.UserStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Getter
@@ -32,9 +33,15 @@ public class UserEntity {
     @Column(name = "PASSWORD")
     String password;
 
-    @Column(name = "ROLE")
-    @Enumerated(EnumType.STRING)
-    Role role;
+    @Column(name = "ROLES")
+    @Builder.Default
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "USER_ROLES",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    Set<RoleEntity> roles = new HashSet<>();
 
     @Column(name = "USER_STATUS")
     @Enumerated(EnumType.STRING)
