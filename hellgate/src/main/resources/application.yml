@@ -15,4 +15,4 @@ app:
     jwt:
       secret: QUBLEW52sg3ftVkbcZl7SkfdpnHLjyrIYSInf1dU4c8=
       access-token-ttl: 1h
-      refres-token-ttl: 30d
+      refresh-token-ttl: 30d

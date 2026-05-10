@@ -2,10 +2,12 @@ package esmukanov.evote_system.hellgate.auth;
 
 import esmukanov.evote_system.commons.entities.RefreshTokenEntity;
 import esmukanov.evote_system.commons.entities.UserEntity;
+import esmukanov.evote_system.commons.enums.UserStatus;
 import esmukanov.evote_system.hellgate.configurations.properties.JwtProperties;
 import esmukanov.evote_system.user_management.repositories.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,7 +32,7 @@ public class RefreshTokenService {
         RefreshTokenEntity refreshToken = RefreshTokenEntity.builder()
                 .tokenHash(hash(rawToken))
                 .user(user)
-                .expiredAt(Instant.now().plus(jwtProperties.getRefresTokenTtl()))
+                .expiredAt(Instant.now().plus(jwtProperties.getRefreshTokenTtl()))
                 .revoked(false)
                 .createdAt(Instant.now())
                 .build();
@@ -50,7 +52,14 @@ public class RefreshTokenService {
             throw new BadCredentialsException("Refresh token expired");
         }
 
-        return refreshToken.getUser();
+        UserEntity user = refreshToken.getUser();
+
+        if (user.getStatus() != UserStatus.ACTIVE) {
+            refreshToken.setRevoked(true);
+            throw new DisabledException("Учетная запись пользователя неактивна");
+        }
+
+        return user;
     }
 
     @Transactional

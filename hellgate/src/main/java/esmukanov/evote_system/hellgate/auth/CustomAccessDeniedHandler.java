@@ -31,7 +31,7 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
                 Instant.now()
         );
 
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
 

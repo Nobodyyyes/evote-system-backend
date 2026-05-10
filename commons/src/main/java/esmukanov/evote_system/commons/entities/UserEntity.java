@@ -24,13 +24,13 @@ public class UserEntity {
     @GeneratedValue(strategy = GenerationType.UUID)
     UUID id;
 
-    @Column(name = "USERNAME")
+    @Column(name = "USERNAME", nullable = false)
     String username;
 
     @Column(name = "EMAIL")
     String email;
 
-    @Column(name = "PASSWORD")
+    @Column(name = "PASSWORD", nullable = false)
     String password;
 
     @Builder.Default
@@ -44,7 +44,7 @@ public class UserEntity {
 
     @Column(name = "USER_STATUS")
     @Enumerated(EnumType.STRING)
-    UserStatus userStatus;
+    UserStatus status;
 
     @Column(name = "CREATED_DATE")
     LocalDateTime createdDate;

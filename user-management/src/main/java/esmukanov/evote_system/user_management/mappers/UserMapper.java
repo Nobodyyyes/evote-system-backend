@@ -36,7 +36,7 @@ public class UserMapper implements ModelMapper<User, UserEntity> {
                 .email(entity.getEmail())
                 .password(entity.getPassword())
                 .roles(roles)
-                .userStatus(entity.getUserStatus())
+                .userStatus(entity.getStatus())
                 .createdDate(entity.getCreatedDate())
                 .build();
     }
