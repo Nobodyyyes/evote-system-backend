@@ -1,17 +1,15 @@
 package esmukanov.evote_system.user_management.services.impl;
 
-import esmukanov.evote_system.commons.entities.RoleEntity;
 import esmukanov.evote_system.commons.enums.Role;
 import esmukanov.evote_system.commons.enums.UserStatus;
-import esmukanov.evote_system.user_management.mappers.UserMapper;
-import esmukanov.evote_system.user_management.models.User;
 import esmukanov.evote_system.user_management.exceptions.UserAlreadyExistsException;
 import esmukanov.evote_system.user_management.exceptions.UserNotFoundException;
+import esmukanov.evote_system.user_management.mappers.UserMapper;
 import esmukanov.evote_system.user_management.mappers.UserResponseMapper;
+import esmukanov.evote_system.user_management.models.User;
 import esmukanov.evote_system.user_management.models.request.UserCreateRequest;
 import esmukanov.evote_system.user_management.models.request.UserUpdateRequest;
 import esmukanov.evote_system.user_management.models.response.UserResponse;
-import esmukanov.evote_system.user_management.repositories.RoleRepository;
 import esmukanov.evote_system.user_management.repositories.UserRepository;
 import esmukanov.evote_system.user_management.services.UserService;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +17,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -32,7 +29,6 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final UserResponseMapper userResponseMapper;
     private final PasswordEncoder passwordEncoder;
-    private final RoleRepository roleRepository;
 
     @Override
     public User getUserById(String userId) {
@@ -75,24 +71,12 @@ public class UserServiceImpl implements UserService {
         return userResponseMapper.toResponse(existsUser);
     }
 
-    private Set<RoleEntity> determineRoles(Set<Role> roles) {
+    private Set<Role> determineRoles(Set<Role> roles) {
         if (roles == null || roles.isEmpty()) {
-            RoleEntity userRole = roleRepository.findByRole(Role.USER)
-                    .orElseThrow(() -> new IllegalStateException("Роль USER не найдена"));
-
-            return new HashSet<>(Set.of(userRole));
+            return Set.of(Role.USER);
         }
 
-        Set<RoleEntity> roleEntities = new HashSet<>();
-
-        for (Role role : roles) {
-            RoleEntity existsRole = roleRepository.findByRole(role)
-                    .orElseThrow(() -> new IllegalStateException("Роль %s не найдена".formatted(role)));
-
-            roleEntities.add(existsRole);
-        }
-
-        return roleEntities;
+        return roles;
     }
 
     @Override
