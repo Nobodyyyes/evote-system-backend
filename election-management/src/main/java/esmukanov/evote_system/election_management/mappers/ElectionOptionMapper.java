@@ -25,7 +25,7 @@ public class ElectionOptionMapper implements ModelMapper<ElectionOption, Electio
         if (model == null) return null;
 
         return ElectionOptionEntity.builder()
-                .uuid(model.getUuid())
+                .id(model.getUuid())
                 .electionId(model.getElectionId())
                 .optionText(model.getOptionText())
                 .orderNumber(model.getOrderNumber())

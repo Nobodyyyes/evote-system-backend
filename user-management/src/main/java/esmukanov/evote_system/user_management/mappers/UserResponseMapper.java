@@ -1,6 +1,6 @@
 package esmukanov.evote_system.user_management.mappers;
 
-import esmukanov.evote_system.commons.models.User;
+import esmukanov.evote_system.user_management.models.User;
 import esmukanov.evote_system.user_management.models.response.UserResponse;
 import org.springframework.stereotype.Component;
 

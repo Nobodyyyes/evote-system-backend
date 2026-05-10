@@ -95,7 +95,7 @@ public class ElectionOptionServiceImpl implements ElectionOptionService {
     }
 
     private void checkElectionEditable(Election election) {
-        if (election.getElectionStatus() != ElectionStatus.DRAFT) {
+        if (election.getStatus() != ElectionStatus.DRAFT) {
             throw new IllegalStateException("Варианты ответа можно изменять только до публикации голосования");
         }
     }

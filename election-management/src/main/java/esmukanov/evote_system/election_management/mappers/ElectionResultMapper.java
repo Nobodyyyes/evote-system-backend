@@ -27,7 +27,7 @@ public class ElectionResultMapper {
 
         return ElectionResult.builder()
                 .id(entity.getId())
-                .electionId(entity.getElection().getUuid())
+                .electionId(entity.getElection().getId())
                 .electionTitle(entity.getElection().getName())
                 .totalVotes(entity.getTotalVotes())
                 .calculatedAt(entity.getCalculatedAt())
@@ -46,6 +46,7 @@ public class ElectionResultMapper {
                 .id(model.getId())
                 .election(election)
                 .totalVotes(model.getTotalVotes())
+                .totalOptions(model.getOptionResults().size())
                 .calculatedAt(model.getCalculatedAt())
                 .build();
 

@@ -1,6 +1,5 @@
-package esmukanov.evote_system.commons.models;
+package esmukanov.evote_system.user_management.models;
 
-import esmukanov.evote_system.commons.entities.RoleEntity;
 import esmukanov.evote_system.commons.enums.Role;
 import esmukanov.evote_system.commons.enums.UserStatus;
 import lombok.*;
@@ -22,7 +21,7 @@ public class User {
     String username;
     String email;
     String password;
-    Set<RoleEntity> roles;
+    Set<Role> roles;
     UserStatus userStatus;
     LocalDateTime createdDate;
 }

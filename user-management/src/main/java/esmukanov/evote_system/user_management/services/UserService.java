@@ -1,6 +1,6 @@
 package esmukanov.evote_system.user_management.services;
 
-import esmukanov.evote_system.commons.models.User;
+import esmukanov.evote_system.user_management.models.User;
 import esmukanov.evote_system.user_management.models.request.UserCreateRequest;
 import esmukanov.evote_system.user_management.models.request.UserUpdateRequest;
 import esmukanov.evote_system.user_management.models.response.UserResponse;

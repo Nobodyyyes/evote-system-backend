@@ -33,7 +33,6 @@ public class UserEntity {
     @Column(name = "PASSWORD")
     String password;
 
-    @Column(name = "ROLES")
     @Builder.Default
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(

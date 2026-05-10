@@ -3,8 +3,8 @@ package esmukanov.evote_system.user_management.services.impl;
 import esmukanov.evote_system.commons.entities.RoleEntity;
 import esmukanov.evote_system.commons.enums.Role;
 import esmukanov.evote_system.commons.enums.UserStatus;
-import esmukanov.evote_system.commons.mappers.UserMapper;
-import esmukanov.evote_system.commons.models.User;
+import esmukanov.evote_system.user_management.mappers.UserMapper;
+import esmukanov.evote_system.user_management.models.User;
 import esmukanov.evote_system.user_management.exceptions.UserAlreadyExistsException;
 import esmukanov.evote_system.user_management.exceptions.UserNotFoundException;
 import esmukanov.evote_system.user_management.mappers.UserResponseMapper;
@@ -77,15 +77,22 @@ public class UserServiceImpl implements UserService {
 
     private Set<RoleEntity> determineRoles(Set<Role> roles) {
         if (roles == null || roles.isEmpty()) {
-            return new HashSet<>();
+            RoleEntity userRole = roleRepository.findByRole(Role.USER)
+                    .orElseThrow(() -> new IllegalStateException("Роль USER не найдена"));
+
+            return new HashSet<>(Set.of(userRole));
         }
 
         Set<RoleEntity> roleEntities = new HashSet<>();
+
         for (Role role : roles) {
-            RoleEntity existsRole = roleRepository.findByRole(role).orElse(null);
+            RoleEntity existsRole = roleRepository.findByRole(role)
+                    .orElseThrow(() -> new IllegalStateException("Роль %s не найдена".formatted(role)));
+
             roleEntities.add(existsRole);
         }
-        return null;
+
+        return roleEntities;
     }
 
     @Override

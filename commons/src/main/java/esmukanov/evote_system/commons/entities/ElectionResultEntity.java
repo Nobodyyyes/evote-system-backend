@@ -15,7 +15,15 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "ELECTION_RESULTS")
+@Table(
+        name = "ELECTION_RESULTS",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "uk_election_results_election",
+                        columnNames = "election_id"
+                )
+        }
+)
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ElectionResultEntity {
 

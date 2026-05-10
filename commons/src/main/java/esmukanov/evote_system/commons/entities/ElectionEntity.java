@@ -22,7 +22,7 @@ public class ElectionEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    UUID uuid;
+    UUID id;
 
     @Column(name = "NAME")
     String name;

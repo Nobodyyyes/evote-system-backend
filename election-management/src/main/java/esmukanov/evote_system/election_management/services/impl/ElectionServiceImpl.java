@@ -47,7 +47,7 @@ public class ElectionServiceImpl implements ElectionService {
                 .description(request.description())
                 .endDateTime(request.endDateTime())
                 .createdAt(LocalDateTime.now())
-                .electionStatus(ElectionStatus.DRAFT)
+                .status(ElectionStatus.DRAFT)
                 .creatorInfo(request.creatorInfo())
                 .accessElectionType(request.accessElectionType())
                 .build();
@@ -79,13 +79,13 @@ public class ElectionServiceImpl implements ElectionService {
     public void publishElection(String electionId) {
         Election existsElection = getElectionById(electionId);
 
-        if (existsElection.getElectionStatus() != ElectionStatus.DRAFT) {
+        if (existsElection.getStatus() != ElectionStatus.DRAFT) {
             throw new IllegalStateException("Опубликовать можно только голосование в статусе DRAFT");
         }
 
         validateElectionBeforePublish(existsElection);
 
-        existsElection.setElectionStatus(ElectionStatus.SCHEDULED);
+        existsElection.setStatus(ElectionStatus.SCHEDULED);
         electionRepository.save(electionMapper.toEntity(existsElection));
     }
 
@@ -102,7 +102,7 @@ public class ElectionServiceImpl implements ElectionService {
             throw new IllegalStateException("Дата окончания голосования обязательна");
         }
 
-        if (election.getStartDateTime().isBefore(election.getEndDateTime())) {
+        if (!election.getStartDateTime().isBefore(election.getEndDateTime())) {
             throw new IllegalStateException("Дата начала должна быть раньше даты окончания");
         }
 
@@ -110,7 +110,7 @@ public class ElectionServiceImpl implements ElectionService {
             throw new IllegalStateException("Дата начала голосования должна быть в будущем");
         }
 
-        long optionsCount = electionOptionService.countByElectionId(election.getUuid().toString());
+        long optionsCount = electionOptionService.countByElectionId(election.getId().toString());
         if (optionsCount < MIN_ELECTION_OPTIONS) {
             throw new IllegalStateException("Для публикации голосования нужно добавить минимум 2 варианта ответа");
         }

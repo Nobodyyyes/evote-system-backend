@@ -17,13 +17,13 @@ import java.util.UUID;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Election {
 
-    UUID uuid;
+    UUID id;
     String name;
     String description;
     LocalDateTime startDateTime;
     LocalDateTime endDateTime;
     LocalDateTime createdAt;
-    ElectionStatus electionStatus;
+    ElectionStatus status;
     @Builder.Default
     ElectionResultVisibilityType resultVisibilityType = ElectionResultVisibilityType.AFTER_FINISH;
     @Builder.Default
