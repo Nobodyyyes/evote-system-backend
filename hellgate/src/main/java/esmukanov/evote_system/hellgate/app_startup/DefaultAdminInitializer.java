@@ -25,6 +25,8 @@ public class DefaultAdminInitializer implements CommandLineRunner {
     @Override
     public void run(String... args) {
         RoleEntity adminRole = createRoleIfNotExists(Role.ADMIN, "Администратор");
+        createRoleIfNotExists(Role.USER, "Пользователь");
+        createRoleIfNotExists(Role.AUDITOR, "Аудитор");
 
         if (!userRepository.existsByUsername("admin")) {
             UserEntity admin = UserEntity.builder()
