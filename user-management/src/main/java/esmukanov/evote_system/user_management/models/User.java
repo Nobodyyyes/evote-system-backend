@@ -22,6 +22,6 @@ public class User {
     String email;
     String password;
     Set<Role> roles;
-    UserStatus userStatus;
+    UserStatus status;
     LocalDateTime createdDate;
 }

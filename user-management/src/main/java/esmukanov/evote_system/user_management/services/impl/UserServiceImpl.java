@@ -53,7 +53,7 @@ public class UserServiceImpl implements UserService {
         newUser.setEmail(request.email());
         newUser.setPassword(passwordEncoder.encode(request.password()));
         newUser.setRoles(determineRoles(request.roles()));
-        newUser.setUserStatus(UserStatus.ACTIVE);
+        newUser.setStatus(UserStatus.ACTIVE);
         newUser.setCreatedDate(LocalDateTime.now());
 
         User saved = userMapper.toModel(userRepository.save(userMapper.toEntity(newUser)));
@@ -65,7 +65,7 @@ public class UserServiceImpl implements UserService {
         User existsUser = getUserById(userId);
         existsUser.setEmail(request.email());
         existsUser.setRoles(determineRoles(request.roles()));
-        existsUser.setUserStatus(request.userStatus());
+        existsUser.setStatus(request.userStatus());
 
         userRepository.save(userMapper.toEntity(existsUser));
         return userResponseMapper.toResponse(existsUser);
