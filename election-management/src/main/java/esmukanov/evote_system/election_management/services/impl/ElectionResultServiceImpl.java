@@ -1,8 +1,10 @@
 package esmukanov.evote_system.election_management.services.impl;
 
+import esmukanov.evote_system.blockchain.services.BlockchainService;
 import esmukanov.evote_system.commons.entities.ElectionEntity;
 import esmukanov.evote_system.commons.entities.ElectionOptionEntity;
 import esmukanov.evote_system.commons.entities.ElectionResultEntity;
+import esmukanov.evote_system.commons.enums.BlockchainEventType;
 import esmukanov.evote_system.commons.enums.ElectionResultVisibilityType;
 import esmukanov.evote_system.commons.enums.ElectionStatus;
 import esmukanov.evote_system.election_management.exceptions.ElectionNotFoundException;
@@ -44,6 +46,7 @@ public class ElectionResultServiceImpl implements ElectionResultService {
     private final ElectionResultRepository electionResultRepository;
     private final VoteRepository voteRepository;
     private final ResultHashService resultHashService;
+    private final BlockchainService blockchainService;
 
     private final ElectionResultMapper electionResultMapper;
 
@@ -124,6 +127,12 @@ public class ElectionResultServiceImpl implements ElectionResultService {
                 electionResultMapper.toEntity(result, electionEntity, options);
 
         ElectionResultEntity savedResult = electionResultRepository.save(resultEntity);
+
+        blockchainService.fixData(
+                savedResult.getId(),
+                savedResult.getResultHash(),
+                BlockchainEventType.RESULT_CALCULATED
+        );
 
         return electionResultMapper.toModel(savedResult);
     }

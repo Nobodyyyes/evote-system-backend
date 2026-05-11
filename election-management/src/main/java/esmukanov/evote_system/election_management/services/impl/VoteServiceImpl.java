@@ -1,9 +1,11 @@
 package esmukanov.evote_system.election_management.services.impl;
 
+import esmukanov.evote_system.blockchain.services.BlockchainService;
 import esmukanov.evote_system.commons.entities.ElectionEntity;
 import esmukanov.evote_system.commons.entities.ElectionOptionEntity;
 import esmukanov.evote_system.commons.entities.VoteEntity;
 import esmukanov.evote_system.commons.enums.AccessElectionType;
+import esmukanov.evote_system.commons.enums.BlockchainEventType;
 import esmukanov.evote_system.commons.enums.ElectionStatus;
 import esmukanov.evote_system.election_management.exceptions.ElectionNotFoundException;
 import esmukanov.evote_system.election_management.exceptions.ElectionOptionNotFoundException;
@@ -14,6 +16,7 @@ import esmukanov.evote_system.election_management.models.Vote;
 import esmukanov.evote_system.election_management.repositories.ElectionOptionRepository;
 import esmukanov.evote_system.election_management.repositories.ElectionRepository;
 import esmukanov.evote_system.election_management.repositories.VoteRepository;
+import esmukanov.evote_system.election_management.services.ParticipationService;
 import esmukanov.evote_system.election_management.services.VoteHashService;
 import esmukanov.evote_system.election_management.services.VoteService;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +34,8 @@ public class VoteServiceImpl implements VoteService {
     private final ElectionRepository electionRepository;
     private final ElectionOptionRepository electionOptionRepository;
     private final VoteRepository voteRepository;
+    private final ParticipationService participationService;
+    private final BlockchainService blockchainService;
 
     private final VoteMapper voteMapper;
     private final VoteHashService voteHashService;
@@ -60,7 +65,7 @@ public class VoteServiceImpl implements VoteService {
 
         String voterHash = voteHashService.generateVoterHash(userUuid, electionUuid);
 
-        checkUserHasNotVoted(electionUuid, voterHash);
+        checkUserHasNotVoted(electionUuid, userUuid, voterHash);
 
         LocalDateTime now = LocalDateTime.now();
 
@@ -83,6 +88,15 @@ public class VoteServiceImpl implements VoteService {
 
         try {
             VoteEntity savedVote = voteRepository.save(voteEntity);
+
+            participationService.saveParticipation(
+                    userUuid,
+                    electionUuid,
+                    now
+            );
+
+            blockchainService.fixData(savedVote.getId(), savedVote.getVoteHash(), BlockchainEventType.VOTE_CAST);
+
             return voteMapper.toModel(savedVote);
         } catch (DataIntegrityViolationException exception) {
             throw new VoteAlreadyExistsException(
@@ -123,7 +137,13 @@ public class VoteServiceImpl implements VoteService {
         );
     }
 
-    private void checkUserHasNotVoted(UUID electionId, String voterHash) {
+    private void checkUserHasNotVoted(UUID electionId, UUID userId, String voterHash) {
+        if (participationService.hasParticipated(userId, electionId)) {
+            throw new VoteAlreadyExistsException(
+                    "Пользователь уже участвовал в данном голосовании"
+            );
+        }
+
         boolean alreadyVoted = voteRepository.existsByElectionIdAndVoterHash(
                 electionId,
                 voterHash

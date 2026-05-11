@@ -21,6 +21,7 @@
         <module>hellgate</module>
         <module>user-management</module>
         <module>election-management</module>
+        <module>blockchain</module>
     </modules>
 
     <properties>

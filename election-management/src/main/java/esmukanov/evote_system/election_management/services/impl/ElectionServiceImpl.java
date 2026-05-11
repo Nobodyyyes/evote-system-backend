@@ -134,15 +134,6 @@ public class ElectionServiceImpl implements ElectionService {
 
     @Override
     @Transactional
-    public int finishActiveElections(LocalDateTime finishedTime) {
-        return electionRepository.finishActiveElections(
-                finishedTime,
-                ElectionStatus.ACTIVE,
-                ElectionStatus.COMPLETED
-        );
-    }
-
-    @Override
     public List<UUID> finishExpiredElections(LocalDateTime now) {
         List<UUID> electionIds = electionRepository.findIdsForFinishing(
                 now,

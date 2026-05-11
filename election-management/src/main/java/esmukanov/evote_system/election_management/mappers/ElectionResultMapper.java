@@ -30,6 +30,7 @@ public class ElectionResultMapper {
                 .electionId(entity.getElection().getId())
                 .electionTitle(entity.getElection().getName())
                 .totalVotes(entity.getTotalVotes())
+                .totalOptions(entity.getTotalOptions())
                 .resultHash(entity.getResultHash())
                 .calculatedAt(entity.getCalculatedAt())
                 .optionResults(entity.getOptionResults().stream().map(optionResultMapper::toModel).toList())

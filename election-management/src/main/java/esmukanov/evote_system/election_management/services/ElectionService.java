@@ -24,7 +24,5 @@ public interface ElectionService {
 
     int activateElections(LocalDateTime activateTime);
 
-    int finishActiveElections(LocalDateTime finishedTime);
-
     List<UUID> finishExpiredElections(LocalDateTime now);
 }

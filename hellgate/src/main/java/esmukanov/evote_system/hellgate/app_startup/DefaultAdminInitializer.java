@@ -3,6 +3,7 @@ package esmukanov.evote_system.hellgate.app_startup;
 import esmukanov.evote_system.commons.entities.RoleEntity;
 import esmukanov.evote_system.commons.entities.UserEntity;
 import esmukanov.evote_system.commons.enums.Role;
+import esmukanov.evote_system.commons.enums.UserStatus;
 import esmukanov.evote_system.user_management.repositories.RoleRepository;
 import esmukanov.evote_system.user_management.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +34,7 @@ public class DefaultAdminInitializer implements CommandLineRunner {
                     .username("admin")
                     .password(passwordEncoder.encode("admin"))
                     .roles(new HashSet<>(Set.of(adminRole)))
+                    .status(UserStatus.ACTIVE)
                     .createdDate(LocalDateTime.now())
                     .build();
 

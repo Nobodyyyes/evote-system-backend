@@ -21,19 +21,28 @@ public class BlockchainRecordEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    UUID uuid;
+    UUID id;
 
-    @Column(name = "DATA_HASH")
+    @Column(name = "RELATED_OBJECT_ID", nullable = false)
+    UUID relatedObjectId;
+
+    @Column(name = "DATA_HASH", nullable = false)
     String dataHash;
 
-    @Column(name = "RECORDED_DATE")
-    LocalDateTime recordedDate;
-
-    @Column(name = "BLOCKCHAIN_EVENT_TYPE")
+    @Column(name = "EVENT_TYPE", nullable = false)
     @Enumerated(EnumType.STRING)
-    BlockchainEventType blockchainEventType;
+    BlockchainEventType eventType;
 
-    @Column(name = "BLOCKCHAIN_RECORD_STATUS")
+    @Column(name = "STATUS", nullable = false)
     @Enumerated(EnumType.STRING)
-    BlockchainRecordStatus blockchainRecordStatus;
+    BlockchainRecordStatus status;
+
+    @Column(name = "TRANSACTION_ID", nullable = false)
+    String transactionId;
+
+    @Column(name = "FIXED_AT", nullable = false)
+    LocalDateTime fixedAt;
+
+    @Column(name = "VERIFIED_AT")
+    LocalDateTime verifiedAt;
 }

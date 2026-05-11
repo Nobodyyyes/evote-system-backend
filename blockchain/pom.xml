@@ -10,17 +10,12 @@
     </parent>
 
     <groupId>esmukanov.evote-system</groupId>
-    <artifactId>election-management</artifactId>
+    <artifactId>blockchain</artifactId>
 
     <dependencies>
         <dependency>
             <groupId>esmukanov.evote-system</groupId>
             <artifactId>commons</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>esmukanov.evote-system</groupId>
-            <artifactId>blockchain</artifactId>
             <version>1.0.0</version>
         </dependency>
     </dependencies>
