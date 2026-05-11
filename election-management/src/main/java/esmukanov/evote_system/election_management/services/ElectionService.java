@@ -6,6 +6,7 @@ import esmukanov.evote_system.election_management.models.request.UpdateElectionR
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 public interface ElectionService {
 
@@ -24,4 +25,6 @@ public interface ElectionService {
     int activateElections(LocalDateTime activateTime);
 
     int finishActiveElections(LocalDateTime finishedTime);
+
+    List<UUID> finishExpiredElections(LocalDateTime now);
 }

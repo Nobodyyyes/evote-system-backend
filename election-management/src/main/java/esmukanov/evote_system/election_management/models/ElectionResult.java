@@ -18,6 +18,7 @@ public class ElectionResult {
     UUID electionId;
     String electionTitle;
     Long totalVotes;
+    String resultHash;
     LocalDateTime calculatedAt;
     @Builder.Default
     List<ElectionOptionResult> optionResults = new ArrayList<>();

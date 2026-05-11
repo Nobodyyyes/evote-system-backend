@@ -19,6 +19,7 @@ import esmukanov.evote_system.election_management.repositories.ElectionResultRep
 import esmukanov.evote_system.election_management.repositories.VoteRepository;
 import esmukanov.evote_system.election_management.services.ElectionResultService;
 import esmukanov.evote_system.election_management.services.ElectionService;
+import esmukanov.evote_system.election_management.services.ResultHashService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,6 +43,7 @@ public class ElectionResultServiceImpl implements ElectionResultService {
     private final ElectionOptionRepository electionOptionRepository;
     private final ElectionResultRepository electionResultRepository;
     private final VoteRepository voteRepository;
+    private final ResultHashService resultHashService;
 
     private final ElectionResultMapper electionResultMapper;
 
@@ -97,10 +99,17 @@ public class ElectionResultServiceImpl implements ElectionResultService {
                 })
                 .toList();
 
+        String resultHash = resultHashService.generateResultHash(
+                electionUuid,
+                totalVotes,
+                optionResults
+        );
+
         ElectionResult result = ElectionResult.builder()
                 .electionId(electionUuid)
                 .electionTitle(election.getName())
                 .totalVotes(totalVotes)
+                .resultHash(resultHash)
                 .calculatedAt(LocalDateTime.now())
                 .optionResults(optionResults)
                 .build();

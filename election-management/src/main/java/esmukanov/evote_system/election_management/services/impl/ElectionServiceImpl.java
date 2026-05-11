@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -139,5 +140,29 @@ public class ElectionServiceImpl implements ElectionService {
                 ElectionStatus.ACTIVE,
                 ElectionStatus.COMPLETED
         );
+    }
+
+    @Override
+    public List<UUID> finishExpiredElections(LocalDateTime now) {
+        List<UUID> electionIds = electionRepository.findIdsForFinishing(
+                now,
+                ElectionStatus.ACTIVE
+        );
+
+        List<UUID> completedElectionIds = new ArrayList<>();
+
+        for (UUID electionId : electionIds) {
+            int updated = electionRepository.completeElectionById(
+                    electionId,
+                    ElectionStatus.ACTIVE,
+                    ElectionStatus.COMPLETED
+            );
+
+            if (updated > 0) {
+                completedElectionIds.add(electionId);
+            }
+        }
+
+        return completedElectionIds;
     }
 }

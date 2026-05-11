@@ -41,6 +41,9 @@ public class ElectionResultEntity {
     @Column(name = "TOTAL_OPTIONS")
     Integer totalOptions;
 
+    @Column(name = "RESULT_HASH", nullable = false, length = 128)
+    String resultHash;
+
     @Column(name = "CALCULATED_AT")
     LocalDateTime calculatedAt;
 

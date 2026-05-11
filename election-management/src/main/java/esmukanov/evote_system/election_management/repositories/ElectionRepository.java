@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 public interface ElectionRepository extends JpaRepository<ElectionEntity, UUID> {
@@ -37,5 +38,29 @@ public interface ElectionRepository extends JpaRepository<ElectionEntity, UUID> 
             @Param("now") LocalDateTime now,
             @Param("activeStatus") ElectionStatus activeStatus,
             @Param("finishedStatus") ElectionStatus finishedStatus
+    );
+
+    @Query("""
+            select e.id
+            from ElectionEntity e
+            where e.electionStatus = :activeStatus
+              and e.endDateTime <= :now
+            """)
+    List<UUID> findIdsForFinishing(
+            @Param("now") LocalDateTime now,
+            @Param("activeStatus") ElectionStatus activeStatus
+    );
+
+    @Modifying
+    @Query("""
+            update ElectionEntity e
+            set e.electionStatus = :completedStatus
+            where e.id = :electionId
+              and e.electionStatus = :activeStatus
+            """)
+    int completeElectionById(
+            @Param("electionId") UUID electionId,
+            @Param("activeStatus") ElectionStatus activeStatus,
+            @Param("completedStatus") ElectionStatus completedStatus
     );
 }
