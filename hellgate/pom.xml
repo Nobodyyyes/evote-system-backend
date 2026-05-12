@@ -32,6 +32,12 @@
             <version>1.0.0</version>
         </dependency>
 
+        <dependency>
+            <groupId>esmukanov.evote-system</groupId>
+            <artifactId>audit</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
         <!-- Внешние зависимости -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
