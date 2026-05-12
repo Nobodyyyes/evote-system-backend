@@ -1,5 +1,8 @@
 package esmukanov.evote_system.hellgate.jobs;
 
+import esmukanov.evote_system.audit.constants.AuditObjectTypes;
+import esmukanov.evote_system.audit.enums.AuditAction;
+import esmukanov.evote_system.audit.services.AuditService;
 import esmukanov.evote_system.election_management.services.ElectionResultService;
 import esmukanov.evote_system.election_management.services.ElectionService;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +21,7 @@ public class ElectionFinishingJob {
 
     private final ElectionService electionService;
     private final ElectionResultService electionResultService;
+    private final AuditService auditService;
 
     @Scheduled(fixedDelayString = "${app.jobs.election-finish}")
     public void finishActiveElection() {
@@ -38,6 +42,13 @@ public class ElectionFinishingJob {
             } catch (Exception exception) {
                 log.error("Cannot calculate result for electionId={}", electionId, exception);
             }
+
+            auditService.logSystemAction(
+                    AuditAction.ELECTION_COMPLETED,
+                    AuditObjectTypes.ELECTION,
+                    electionId,
+                    "Голосование автоматически завершено"
+            );
         }
     }
 }

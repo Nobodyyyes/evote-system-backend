@@ -1,5 +1,8 @@
 package esmukanov.evote_system.user_management.services.impl;
 
+import esmukanov.evote_system.audit.constants.AuditObjectTypes;
+import esmukanov.evote_system.audit.enums.AuditAction;
+import esmukanov.evote_system.audit.services.AuditService;
 import esmukanov.evote_system.commons.enums.Role;
 import esmukanov.evote_system.commons.enums.UserStatus;
 import esmukanov.evote_system.user_management.exceptions.UserAlreadyExistsException;
@@ -29,6 +32,7 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final UserResponseMapper userResponseMapper;
     private final PasswordEncoder passwordEncoder;
+    private final AuditService auditService;
 
     @Override
     public User getUserById(String userId) {
@@ -57,6 +61,14 @@ public class UserServiceImpl implements UserService {
         newUser.setCreatedDate(LocalDateTime.now());
 
         User saved = userMapper.toModel(userRepository.save(userMapper.toEntity(newUser)));
+
+        auditService.logSystemAction(
+                AuditAction.USER_CREATED,
+                AuditObjectTypes.USER,
+                saved.getId(),
+                "Создан новый пользователь"
+        );
+
         return userResponseMapper.toResponse(saved);
     }
 
@@ -67,7 +79,15 @@ public class UserServiceImpl implements UserService {
         existsUser.setRoles(determineRoles(request.roles()));
         existsUser.setStatus(request.userStatus());
 
-        userRepository.save(userMapper.toEntity(existsUser));
+        User saved = userMapper.toModel(userRepository.save(userMapper.toEntity(existsUser)));
+
+        auditService.logSystemAction(
+                AuditAction.USER_CREATED,
+                AuditObjectTypes.USER,
+                saved.getId(),
+                "Обновлен пользователь"
+        );
+
         return userResponseMapper.toResponse(existsUser);
     }
 

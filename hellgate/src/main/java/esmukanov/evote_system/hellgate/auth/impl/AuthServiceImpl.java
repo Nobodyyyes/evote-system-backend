@@ -1,5 +1,8 @@
 package esmukanov.evote_system.hellgate.auth.impl;
 
+import esmukanov.evote_system.audit.constants.AuditObjectTypes;
+import esmukanov.evote_system.audit.enums.AuditAction;
+import esmukanov.evote_system.audit.services.AuditService;
 import esmukanov.evote_system.commons.entities.UserEntity;
 import esmukanov.evote_system.hellgate.auth.AuthService;
 import esmukanov.evote_system.hellgate.auth.JwtService;
@@ -26,6 +29,7 @@ public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
     private final JwtService jwtService;
     private final RefreshTokenService refreshTokenService;
+    private final AuditService auditService;
 
     @Override
     @Transactional
@@ -44,6 +48,15 @@ public class AuthServiceImpl implements AuthService {
 
         String accessToken = jwtService.generateAccessToken(user);
         String refreshToken = refreshTokenService.createRefreshToken(user);
+
+        auditService.logUserAction(
+                user.getId(),
+                user.getUsername(),
+                AuditAction.USER_LOGIN_SUCCESS,
+                AuditObjectTypes.USER,
+                user.getId(),
+                "Пользователь успешно вошел в систему"
+        );
 
         return new AuthResponse(
                 accessToken,

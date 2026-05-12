@@ -1,5 +1,8 @@
 package esmukanov.evote_system.election_management.services.impl;
 
+import esmukanov.evote_system.audit.constants.AuditObjectTypes;
+import esmukanov.evote_system.audit.enums.AuditAction;
+import esmukanov.evote_system.audit.services.AuditService;
 import esmukanov.evote_system.blockchain.services.BlockchainService;
 import esmukanov.evote_system.commons.entities.ElectionEntity;
 import esmukanov.evote_system.commons.entities.ElectionOptionEntity;
@@ -36,6 +39,7 @@ public class VoteServiceImpl implements VoteService {
     private final VoteRepository voteRepository;
     private final ParticipationService participationService;
     private final BlockchainService blockchainService;
+    private final AuditService auditService;
 
     private final VoteMapper voteMapper;
     private final VoteHashService voteHashService;
@@ -52,7 +56,7 @@ public class VoteServiceImpl implements VoteService {
                         "Голосование с идентификатором [%s] не найдено".formatted(electionId)
                 ));
 
-        checkElectionIsActive(election);
+        checkElectionIsActive(election, userUuid);
 
         ElectionOptionEntity option = electionOptionRepository.findById(optionUuid)
                 .orElseThrow(() -> new ElectionOptionNotFoundException(
@@ -97,6 +101,15 @@ public class VoteServiceImpl implements VoteService {
 
             blockchainService.fixData(savedVote.getId(), savedVote.getVoteHash(), BlockchainEventType.VOTE_CAST);
 
+            auditService.logUserAction(
+                    userUuid,
+                    null,
+                    AuditAction.VOTE_CAST,
+                    AuditObjectTypes.ELECTION,
+                    electionUuid,
+                    "Пользователь успешно принял участие в голосовании"
+            );
+
             return voteMapper.toModel(savedVote);
         } catch (DataIntegrityViolationException exception) {
             throw new VoteAlreadyExistsException(
@@ -105,8 +118,18 @@ public class VoteServiceImpl implements VoteService {
         }
     }
 
-    private void checkElectionIsActive(ElectionEntity election) {
+    private void checkElectionIsActive(ElectionEntity election, UUID userId) {
         if (election.getElectionStatus() != ElectionStatus.ACTIVE) {
+
+            auditService.logUserAction(
+                    userId,
+                    null,
+                    AuditAction.VOTE_REJECTED_ELECTION_NOT_ACTIVE,
+                    AuditObjectTypes.ELECTION,
+                    election.getId(),
+                    "Отклонена попытка голосования: голосование не активно"
+            );
+
             throw new VoteNotAllowedException(
                     "Голосование не активно. Отправка голоса невозможна"
             );
@@ -139,6 +162,16 @@ public class VoteServiceImpl implements VoteService {
 
     private void checkUserHasNotVoted(UUID electionId, UUID userId, String voterHash) {
         if (participationService.hasParticipated(userId, electionId)) {
+
+            auditService.logUserAction(
+                    userId,
+                    null,
+                    AuditAction.VOTE_REJECTED_ALREADY_VOTED,
+                    AuditObjectTypes.ELECTION,
+                    electionId,
+                    "Отклонена попытка повторного голосования"
+            );
+
             throw new VoteAlreadyExistsException(
                     "Пользователь уже участвовал в данном голосовании"
             );
@@ -150,6 +183,16 @@ public class VoteServiceImpl implements VoteService {
         );
 
         if (alreadyVoted) {
+
+            auditService.logUserAction(
+                    userId,
+                    null,
+                    AuditAction.VOTE_REJECTED_ALREADY_VOTED,
+                    AuditObjectTypes.ELECTION,
+                    electionId,
+                    "Отклонена попытка повторного голосования по voterHash"
+            );
+
             throw new VoteAlreadyExistsException(
                     "Пользователь уже проголосовал в данном голосовании"
             );

@@ -1,5 +1,8 @@
 package esmukanov.evote_system.blockchain.services.impl;
 
+import esmukanov.evote_system.audit.constants.AuditObjectTypes;
+import esmukanov.evote_system.audit.enums.AuditAction;
+import esmukanov.evote_system.audit.services.AuditService;
 import esmukanov.evote_system.blockchain.exceptions.BlockchainRecordNotFoundException;
 import esmukanov.evote_system.blockchain.exceptions.BlockchainVerificationException;
 import esmukanov.evote_system.blockchain.mappers.BlockchainRecordMapper;
@@ -23,6 +26,7 @@ public class BlockchainServiceImpl implements BlockchainService {
 
     private final BlockchainRecordRepository blockchainRecordRepository;
     private final BlockchainRecordMapper blockchainRecordMapper;
+    private final AuditService auditService;
 
     @Override
     @Transactional
@@ -51,6 +55,14 @@ public class BlockchainServiceImpl implements BlockchainService {
 
         BlockchainRecordEntity savedRecord = blockchainRecordRepository.save(record);
 
+        auditService.logSystemAction(
+                AuditAction.BLOCKCHAIN_RECORD_CREATED,
+                AuditObjectTypes.BLOCKCHAIN_RECORD,
+                savedRecord.getId(),
+                "Контрольный хэш зафиксирован в блокчейн-модуле",
+                "eventType=%s, relatedObjectId=%s".formatted(eventType, relatedObjectId)
+        );
+
         return blockchainRecordMapper.toModel(savedRecord);
     }
 
@@ -66,12 +78,28 @@ public class BlockchainServiceImpl implements BlockchainService {
                 ));
 
         if (!record.getDataHash().equals(currentHash)) {
+
+            auditService.logSystemAction(
+                    AuditAction.BLOCKCHAIN_VERIFICATION_FAILED,
+                    AuditObjectTypes.BLOCKCHAIN_RECORD,
+                    record.getId(),
+                    "Проверка контрольного хэша не пройдена",
+                    "eventType=%s, relatedObjectId=%s".formatted(eventType, relatedObjectId)
+            );
+
             throw new BlockchainVerificationException(
                     "Проверка целостности не пройдена. Текущий хэш не совпадает с зафиксированным"
             );
         }
 
         record.setVerifiedAt(LocalDateTime.now());
+
+        auditService.logSystemAction(
+                AuditAction.BLOCKCHAIN_RECORD_VERIFIED,
+                AuditObjectTypes.BLOCKCHAIN_RECORD,
+                record.getId(),
+                "Проверка контрольного хэша успешно выполнена"
+        );
 
         return blockchainRecordMapper.toModel(record);
     }

@@ -1,5 +1,8 @@
 package esmukanov.evote_system.election_management.services.impl;
 
+import esmukanov.evote_system.audit.constants.AuditObjectTypes;
+import esmukanov.evote_system.audit.enums.AuditAction;
+import esmukanov.evote_system.audit.services.AuditService;
 import esmukanov.evote_system.blockchain.services.BlockchainService;
 import esmukanov.evote_system.commons.entities.ElectionEntity;
 import esmukanov.evote_system.commons.entities.ElectionOptionEntity;
@@ -47,6 +50,7 @@ public class ElectionResultServiceImpl implements ElectionResultService {
     private final VoteRepository voteRepository;
     private final ResultHashService resultHashService;
     private final BlockchainService blockchainService;
+    private final AuditService auditService;
 
     private final ElectionResultMapper electionResultMapper;
 
@@ -134,6 +138,13 @@ public class ElectionResultServiceImpl implements ElectionResultService {
                 BlockchainEventType.RESULT_CALCULATED
         );
 
+        auditService.logSystemAction(
+                AuditAction.RESULT_CALCULATED,
+                AuditObjectTypes.RESULT,
+                savedResult.getId(),
+                "Результаты голосования рассчитаны"
+        );
+
         return electionResultMapper.toModel(savedResult);
     }
 
@@ -185,6 +196,13 @@ public class ElectionResultServiceImpl implements ElectionResultService {
                 .orElseThrow(() -> new ElectionResultNotAvailableException(
                         "Результаты голосования еще не рассчитаны"
                 ));
+
+        auditService.logSystemAction(
+                AuditAction.RESULT_PUBLISHED,
+                AuditObjectTypes.ELECTION,
+                electionUuid,
+                "Результаты голосования опубликованы"
+        );
 
         return electionResultMapper.toModel(result);
     }
