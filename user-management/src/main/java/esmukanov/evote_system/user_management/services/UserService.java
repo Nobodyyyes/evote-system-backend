@@ -2,6 +2,7 @@ package esmukanov.evote_system.user_management.services;
 
 import esmukanov.evote_system.commons.enums.Role;
 import esmukanov.evote_system.commons.enums.UserStatus;
+import esmukanov.evote_system.user_management.models.User;
 import esmukanov.evote_system.user_management.models.request.UserCreateRequest;
 import esmukanov.evote_system.user_management.models.request.UserUpdateRequest;
 import esmukanov.evote_system.user_management.models.response.UserResponse;
@@ -10,6 +11,8 @@ import java.util.List;
 import java.util.Set;
 
 public interface UserService {
+
+    User getUserByUsername(String username);
 
     UserResponse getUserResponseById(String userId);
 

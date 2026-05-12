@@ -35,6 +35,15 @@ public class UserServiceImpl implements UserService {
     private final AuditService auditService;
 
     @Override
+    public User getUserByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .map(userMapper::toModel)
+                .orElseThrow(() -> new UserNotFoundException(
+                        "Пользователь с username [%s] не найден".formatted(username)
+                ));
+    }
+
+    @Override
     public UserResponse getUserResponseById(String userId) {
         User user = userRepository.findById(UUID.fromString(userId))
                 .map(userMapper::toModel)

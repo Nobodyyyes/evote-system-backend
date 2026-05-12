@@ -5,9 +5,6 @@ import jakarta.validation.constraints.NotBlank;
 public record CastVoteRequest(
 
         @NotBlank
-        String optionId,
-
-        @NotBlank
-        String userId
+        String optionId
 ) {
 }
