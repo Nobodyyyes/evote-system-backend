@@ -1,5 +1,8 @@
 package esmukanov.evote_system.election_management.services.impl;
 
+import esmukanov.evote_system.audit.constants.AuditObjectTypes;
+import esmukanov.evote_system.audit.enums.AuditAction;
+import esmukanov.evote_system.audit.services.AuditService;
 import esmukanov.evote_system.commons.enums.ElectionStatus;
 import esmukanov.evote_system.election_management.exceptions.ElectionNotFoundException;
 import esmukanov.evote_system.election_management.mappers.ElectionMapper;
@@ -26,6 +29,7 @@ public class ElectionServiceImpl implements ElectionService {
 
     private final ElectionRepository electionRepository;
     private final ElectionMapper electionMapper;
+    private final AuditService auditService;
 
     private final ElectionOptionService electionOptionService;
 
@@ -46,7 +50,7 @@ public class ElectionServiceImpl implements ElectionService {
         Election newElection = Election.builder()
                 .name(request.name())
                 .description(request.description())
-                .startDateTime(LocalDateTime.now())
+                .startDateTime(request.startDateTime())
                 .endDateTime(request.endDateTime())
                 .createdAt(LocalDateTime.now())
                 .status(ElectionStatus.DRAFT)
@@ -54,7 +58,16 @@ public class ElectionServiceImpl implements ElectionService {
                 .accessElectionType(request.accessElectionType())
                 .build();
 
-        return electionMapper.toModel(electionRepository.save(electionMapper.toEntity(newElection)));
+        Election saved = electionMapper.toModel(electionRepository.save(electionMapper.toEntity(newElection)));
+
+        auditService.logSystemAction(
+                AuditAction.ELECTION_CREATED,
+                AuditObjectTypes.ELECTION,
+                saved.getId(),
+                "Создано новое голосование"
+        );
+
+        return saved;
     }
 
     @Override
@@ -71,6 +84,7 @@ public class ElectionServiceImpl implements ElectionService {
 
         existsElection.setName(request.name());
         existsElection.setDescription(request.description());
+        existsElection.setStartDateTime(request.startDateTime());
         existsElection.setEndDateTime(request.endDateTime());
         existsElection.setAccessElectionType(request.accessElectionType());
 
@@ -94,6 +108,13 @@ public class ElectionServiceImpl implements ElectionService {
 
         existsElection.setStatus(ElectionStatus.SCHEDULED);
         electionRepository.save(electionMapper.toEntity(existsElection));
+
+        auditService.logSystemAction(
+                AuditAction.ELECTION_PUBLISHED,
+                AuditObjectTypes.ELECTION,
+                existsElection.getId(),
+                "Голосование опубликовано"
+        );
     }
 
     private void validateElectionBeforePublish(Election election) {

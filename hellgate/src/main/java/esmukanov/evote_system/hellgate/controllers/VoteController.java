@@ -1,7 +1,7 @@
 package esmukanov.evote_system.hellgate.controllers;
 
-import esmukanov.evote_system.election_management.models.Vote;
 import esmukanov.evote_system.election_management.models.request.CastVoteRequest;
+import esmukanov.evote_system.election_management.models.response.VoteAcceptedResponse;
 import esmukanov.evote_system.election_management.services.VoteService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,8 +17,8 @@ public class VoteController {
 
     @PostMapping("/{electionId}/votes")
     @ResponseStatus(HttpStatus.CREATED)
-    public Vote castVote(@PathVariable String electionId,
-                         @Valid @RequestBody CastVoteRequest request) {
+    public VoteAcceptedResponse castVote(@PathVariable String electionId,
+                                         @Valid @RequestBody CastVoteRequest request) {
         return voteService.castVote(electionId, request.optionId(), request.userId());
     }
 }

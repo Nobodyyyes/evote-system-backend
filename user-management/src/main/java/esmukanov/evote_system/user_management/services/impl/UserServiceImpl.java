@@ -101,7 +101,7 @@ public class UserServiceImpl implements UserService {
         );
 
         auditService.logSystemAction(
-                AuditAction.USER_STATUS_CHANGED,
+                AuditAction.USER_UPDATED,
                 AuditObjectTypes.USER,
                 saved.getId(),
                 "Обновлены данные пользователя"
@@ -121,6 +121,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public void delete(String userId) {
         userRepository.deleteById(UUID.fromString(userId));
+        auditService.logSystemAction(
+                AuditAction.USER_DELETED,
+                AuditObjectTypes.USER,
+                UUID.fromString(userId),
+                "Пользователь удален"
+        );
     }
 
     @Override

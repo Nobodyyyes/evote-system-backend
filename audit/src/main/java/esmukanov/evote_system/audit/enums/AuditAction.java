@@ -8,6 +8,7 @@ public enum AuditAction {
     TOKEN_REFRESHED,
 
     USER_CREATED,
+    USER_UPDATED,
     USER_STATUS_CHANGED,
     USER_ROLES_CHANGED,
     USER_DELETED,

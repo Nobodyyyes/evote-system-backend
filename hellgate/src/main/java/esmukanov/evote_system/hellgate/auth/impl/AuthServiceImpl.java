@@ -23,7 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
-    private static final String BEARER_TOKEN_TYPE = "Bearer ";
+    private static final String BEARER_TOKEN_TYPE = "Bearer";
 
     private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;

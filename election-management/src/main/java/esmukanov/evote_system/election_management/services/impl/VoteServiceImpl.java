@@ -16,6 +16,7 @@ import esmukanov.evote_system.election_management.exceptions.VoteAlreadyExistsEx
 import esmukanov.evote_system.election_management.exceptions.VoteNotAllowedException;
 import esmukanov.evote_system.election_management.mappers.VoteMapper;
 import esmukanov.evote_system.election_management.models.Vote;
+import esmukanov.evote_system.election_management.models.response.VoteAcceptedResponse;
 import esmukanov.evote_system.election_management.repositories.ElectionOptionRepository;
 import esmukanov.evote_system.election_management.repositories.ElectionRepository;
 import esmukanov.evote_system.election_management.repositories.VoteRepository;
@@ -46,7 +47,7 @@ public class VoteServiceImpl implements VoteService {
 
     @Override
     @Transactional
-    public Vote castVote(String electionId, String optionId, String userId) {
+    public VoteAcceptedResponse castVote(String electionId, String optionId, String userId) {
         UUID electionUuid = parseUuid(electionId, "Некорректный идентификатор голосования");
         UUID optionUuid = parseUuid(optionId, "Некорректный идентификатор варианта ответа");
         UUID userUuid = parseUuid(userId, "Некорректный идентификатор пользователя");
@@ -110,7 +111,7 @@ public class VoteServiceImpl implements VoteService {
                     "Пользователь успешно принял участие в голосовании"
             );
 
-            return voteMapper.toModel(savedVote);
+            return voteMapper.toResponse(voteMapper.toModel(savedVote));
         } catch (DataIntegrityViolationException exception) {
             throw new VoteAlreadyExistsException(
                     "Пользователь уже проголосовал в данном голосовании"

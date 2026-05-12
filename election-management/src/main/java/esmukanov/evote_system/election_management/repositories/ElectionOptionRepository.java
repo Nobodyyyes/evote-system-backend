@@ -8,7 +8,7 @@ import java.util.UUID;
 
 public interface ElectionOptionRepository extends JpaRepository<ElectionOptionEntity, UUID> {
 
-    List<ElectionOptionEntity> findAllByElectionId(UUID electionId);
+    List<ElectionOptionEntity> findAllByElectionIdOrderByOrderNumberAsc(UUID electionId);
 
     long countAllByElectionId(UUID electionId);
 }

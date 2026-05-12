@@ -4,6 +4,7 @@ import esmukanov.evote_system.commons.entities.ElectionEntity;
 import esmukanov.evote_system.commons.entities.ElectionOptionEntity;
 import esmukanov.evote_system.commons.entities.VoteEntity;
 import esmukanov.evote_system.election_management.models.Vote;
+import esmukanov.evote_system.election_management.models.response.VoteAcceptedResponse;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -37,5 +38,9 @@ public class VoteMapper {
                 .voteHash(model.getVoteHash())
                 .createdAt(model.getCreatedAt())
                 .build();
+    }
+
+    public VoteAcceptedResponse toResponse(Vote vote) {
+        return new VoteAcceptedResponse(vote.getElectionId().toString(), "Голос успешно принят");
     }
 }

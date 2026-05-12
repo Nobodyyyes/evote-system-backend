@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 public record UpdateElectionRequest(
         String name,
         String description,
+        LocalDateTime startDateTime,
         LocalDateTime endDateTime,
         AccessElectionType accessElectionType
 ) {

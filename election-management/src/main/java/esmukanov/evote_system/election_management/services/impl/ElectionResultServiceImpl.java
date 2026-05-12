@@ -73,7 +73,7 @@ public class ElectionResultServiceImpl implements ElectionResultService {
                 ));
 
         List<ElectionOptionEntity> options =
-                electionOptionRepository.findAllByElectionId(electionUuid);
+                electionOptionRepository.findAllByElectionIdOrderByOrderNumberAsc(electionUuid);
 
         if (options.isEmpty()) {
             throw new ElectionResultCalculateException(

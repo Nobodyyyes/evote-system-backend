@@ -34,7 +34,7 @@ public class ElectionOptionServiceImpl implements ElectionOptionService {
 
     @Override
     public List<ElectionOptionResponse> getAllElectionOptionsByElectionId(String electionId) {
-        return electionOptionMapper.toModels(electionOptionRepository.findAllByElectionId(UUID.fromString(electionId)))
+        return electionOptionMapper.toModels(electionOptionRepository.findAllByElectionIdOrderByOrderNumberAsc(UUID.fromString(electionId)))
                 .stream()
                 .map(responseMapper::toResponse)
                 .toList();

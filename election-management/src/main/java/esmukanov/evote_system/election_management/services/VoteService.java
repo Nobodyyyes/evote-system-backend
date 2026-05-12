@@ -1,8 +1,8 @@
 package esmukanov.evote_system.election_management.services;
 
-import esmukanov.evote_system.election_management.models.Vote;
+import esmukanov.evote_system.election_management.models.response.VoteAcceptedResponse;
 
 public interface VoteService {
 
-    Vote castVote(String electionId, String optionId, String userId);
+    VoteAcceptedResponse castVote(String electionId, String optionId, String userId);
 }
