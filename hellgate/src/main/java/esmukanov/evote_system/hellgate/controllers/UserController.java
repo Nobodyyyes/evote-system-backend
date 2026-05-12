@@ -1,6 +1,5 @@
 package esmukanov.evote_system.hellgate.controllers;
 
-import esmukanov.evote_system.user_management.models.User;
 import esmukanov.evote_system.user_management.models.request.UserCreateRequest;
 import esmukanov.evote_system.user_management.models.request.UserUpdateRequest;
 import esmukanov.evote_system.user_management.models.response.UserResponse;
@@ -19,12 +18,12 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/{userId}")
-    public User getUserById(@PathVariable String userId) {
-        return userService.getUserById(userId);
+    public UserResponse getUserById(@PathVariable String userId) {
+        return userService.getUserResponseById(userId);
     }
 
     @GetMapping
-    public List<User> getAllUsers() {
+    public List<UserResponse> getAllUsers() {
         return userService.getAllUsers();
     }
 

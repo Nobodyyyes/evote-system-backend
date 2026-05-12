@@ -35,15 +35,23 @@ public class UserServiceImpl implements UserService {
     private final AuditService auditService;
 
     @Override
-    public User getUserById(String userId) {
+    public UserResponse getUserResponseById(String userId) {
+        User user = userRepository.findById(UUID.fromString(userId))
+                .map(userMapper::toModel)
+                .orElseThrow(() -> new UserNotFoundException("Пользователь по ID [%s] не найден".formatted(userId)));
+
+        return userResponseMapper.toResponse(user);
+    }
+
+    private User getUserById(String userId) {
         return userRepository.findById(UUID.fromString(userId))
                 .map(userMapper::toModel)
                 .orElseThrow(() -> new UserNotFoundException("Пользователь по ID [%s] не найден".formatted(userId)));
     }
 
     @Override
-    public List<User> getAllUsers() {
-        return userMapper.toModels(userRepository.findAll());
+    public List<UserResponse> getAllUsers() {
+        return userResponseMapper.toResponses(userMapper.toModels(userRepository.findAll()));
     }
 
     @Override
@@ -75,20 +83,31 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponse update(String userId, UserUpdateRequest request) {
         User existsUser = getUserById(userId);
-        existsUser.setEmail(request.email());
-        existsUser.setRoles(determineRoles(request.roles()));
-        existsUser.setStatus(request.userStatus());
 
-        User saved = userMapper.toModel(userRepository.save(userMapper.toEntity(existsUser)));
+        if (request.email() != null) {
+            existsUser.setEmail(request.email());
+        }
 
-        auditService.logSystemAction(
-                AuditAction.USER_CREATED,
-                AuditObjectTypes.USER,
-                saved.getId(),
-                "Обновлен пользователь"
+        if (request.roles() != null && !request.roles().isEmpty()) {
+            existsUser.setRoles(request.roles());
+        }
+
+        if (request.userStatus() != null) {
+            existsUser.setStatus(request.userStatus());
+        }
+
+        User saved = userMapper.toModel(
+                userRepository.save(userMapper.toEntity(existsUser))
         );
 
-        return userResponseMapper.toResponse(existsUser);
+        auditService.logSystemAction(
+                AuditAction.USER_STATUS_CHANGED,
+                AuditObjectTypes.USER,
+                saved.getId(),
+                "Обновлены данные пользователя"
+        );
+
+        return userResponseMapper.toResponse(saved);
     }
 
     private Set<Role> determineRoles(Set<Role> roles) {
@@ -102,5 +121,43 @@ public class UserServiceImpl implements UserService {
     @Override
     public void delete(String userId) {
         userRepository.deleteById(UUID.fromString(userId));
+    }
+
+    @Override
+    public UserResponse changeStatus(String userId, UserStatus status) {
+        User user = getUserById(userId);
+        user.setStatus(status);
+
+        User saved = userMapper.toModel(
+                userRepository.save(userMapper.toEntity(user))
+        );
+
+        auditService.logSystemAction(
+                AuditAction.USER_STATUS_CHANGED,
+                AuditObjectTypes.USER,
+                saved.getId(),
+                "Изменен статус пользователя на " + status
+        );
+
+        return userResponseMapper.toResponse(saved);
+    }
+
+    @Override
+    public UserResponse changeRoles(String userId, Set<Role> roles) {
+        User user = getUserById(userId);
+        user.setRoles(determineRoles(roles));
+
+        User saved = userMapper.toModel(
+                userRepository.save(userMapper.toEntity(user))
+        );
+
+        auditService.logSystemAction(
+                AuditAction.USER_ROLES_CHANGED,
+                AuditObjectTypes.USER,
+                saved.getId(),
+                "Изменены роли пользователя"
+        );
+
+        return userResponseMapper.toResponse(saved);
     }
 }

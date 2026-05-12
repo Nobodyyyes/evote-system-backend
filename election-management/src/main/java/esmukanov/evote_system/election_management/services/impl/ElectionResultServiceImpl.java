@@ -116,6 +116,7 @@ public class ElectionResultServiceImpl implements ElectionResultService {
                 .electionId(electionUuid)
                 .electionTitle(election.getName())
                 .totalVotes(totalVotes)
+                .totalOptions(optionResults.size())
                 .resultHash(resultHash)
                 .calculatedAt(LocalDateTime.now())
                 .optionResults(optionResults)

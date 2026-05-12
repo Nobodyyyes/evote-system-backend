@@ -46,6 +46,7 @@ public class ElectionServiceImpl implements ElectionService {
         Election newElection = Election.builder()
                 .name(request.name())
                 .description(request.description())
+                .startDateTime(LocalDateTime.now())
                 .endDateTime(request.endDateTime())
                 .createdAt(LocalDateTime.now())
                 .status(ElectionStatus.DRAFT)
