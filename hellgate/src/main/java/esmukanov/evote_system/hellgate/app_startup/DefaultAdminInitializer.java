@@ -31,6 +31,8 @@ public class DefaultAdminInitializer implements CommandLineRunner {
 
         if (!userRepository.existsByUsername("admin")) {
             UserEntity admin = UserEntity.builder()
+                    .firstname("admin")
+                    .name("admin")
                     .username("admin")
                     .password(passwordEncoder.encode("admin"))
                     .roles(new HashSet<>(Set.of(adminRole)))

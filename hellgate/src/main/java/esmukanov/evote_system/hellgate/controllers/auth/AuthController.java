@@ -3,6 +3,7 @@ package esmukanov.evote_system.hellgate.controllers.auth;
 import esmukanov.evote_system.hellgate.auth.AuthService;
 import esmukanov.evote_system.hellgate.models.request.LoginRequest;
 import esmukanov.evote_system.hellgate.models.request.RefreshTokenRequest;
+import esmukanov.evote_system.hellgate.models.request.RegisterRequest;
 import esmukanov.evote_system.hellgate.models.response.AuthResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,11 @@ public class AuthController {
     @PostMapping("/login")
     public AuthResponse login(@Valid @RequestBody LoginRequest request) {
         return authService.login(request);
+    }
+
+    @PostMapping("/register")
+    public AuthResponse register(@Valid @RequestBody RegisterRequest request) {
+        return authService.register(request);
     }
 
     @PostMapping("/refresh")
