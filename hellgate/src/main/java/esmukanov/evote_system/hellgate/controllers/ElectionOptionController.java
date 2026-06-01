@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/election/{electionId}/options")
+@RequestMapping("/api/v1/elections/{electionId}/options")
 @RequiredArgsConstructor
 public class ElectionOptionController {
 

@@ -19,6 +19,8 @@ public class User {
 
     UUID id;
     String username;
+    String firstname;
+    String name;
     String email;
     String password;
     Set<Role> roles;

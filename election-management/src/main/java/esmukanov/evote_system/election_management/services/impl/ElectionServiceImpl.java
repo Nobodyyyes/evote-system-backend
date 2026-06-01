@@ -134,9 +134,9 @@ public class ElectionServiceImpl implements ElectionService {
             throw new IllegalStateException("Дата начала должна быть раньше даты окончания");
         }
 
-        if (!election.getStartDateTime().isAfter(LocalDateTime.now())) {
-            throw new IllegalStateException("Дата начала голосования должна быть в будущем");
-        }
+//        if (!election.getStartDateTime().isAfter(LocalDateTime.now())) {
+//            throw new IllegalStateException("Дата начала голосования должна быть в будущем");
+//        }
 
         long optionsCount = electionOptionService.countByElectionId(election.getId().toString());
         if (optionsCount < MIN_ELECTION_OPTIONS) {

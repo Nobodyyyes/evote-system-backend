@@ -57,10 +57,11 @@ public class SecurityConfiguration {
                                 "/api/v1/auth/login",
                                 "/api/v1/auth/register",
                                 "/api/v1/auth/refresh",
-                                "/api/v1/auth/logout"
+                                "/api/v1/auth/logout",
+                                "/error"
                         ).permitAll()
 
-                        .requestMatchers(HttpMethod.POST, "/api/v1/users").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/users").permitAll()
 
                         .requestMatchers(HttpMethod.GET, "/api/v1/users/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/v1/users/**").hasRole("ADMIN")
@@ -111,8 +112,8 @@ public class SecurityConfiguration {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
 
         corsConfiguration.setAllowedOrigins(List.of(
-                "http://localhost:5173",
-                "http://127.0.0.1:5173"
+                "http://localhost:9998",
+                "http://127.0.0.1:9998"
         ));
 
         corsConfiguration.setAllowedMethods(List.of(
